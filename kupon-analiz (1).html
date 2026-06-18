@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KuponAI">
+<meta name="theme-color" content="#0a0f0a">
+<title>KuponAI</title>
+<style>
+:root {
+  --bg: #0a0f0a;
+  --bg2: #111811;
+  --bg3: #1a221a;
+  --card: #1e271e;
+  --card2: #243024;
+  --border: #2d3d2d;
+  --text: #e8f0e8;
+  --text2: #9ab09a;
+  --text3: #6a876a;
+  --accent: #00e676;
+  --accent2: #69f0ae;
+  --red: #ef5350;
+  --amber: #f59e0b;
+  --green: #00c853;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* STATUS BAR SPACER */
+.status-bar { height: var(--safe-top); background: var(--bg2); flex-shrink: 0; }
+
+/* TOP NAV */
+.topnav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.logo { font-size: 20px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+.logo-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.nav-chip { font-size: 11px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
+
+/* SCROLL AREA */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.page { display: none; padding: 16px 16px 24px; }
+.page.active { display: block; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: var(--safe-bot);
+  flex-shrink: 0;
+}
+.bnav-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text3);
+  padding: 10px 0 8px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.bnav-btn.active { color: var(--accent); }
+.bnav-icon { font-size: 22px; line-height: 1; }
+
+/* CARDS */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+.card-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+
+/* UPLOAD */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  position: relative;
+  margin-bottom: 12px;
+  background: var(--bg3);
+}
+.upload-zone.active { border-color: var(--accent); background: rgba(0,230,118,0.05); }
+#file-input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.upload-emoji { font-size: 52px; margin-bottom: 12px; }
+.upload-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.upload-sub { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+.preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.preview-img { width: 100%; border-radius: 10px; border: 1px solid var(--border); display: block; }
+
+/* FORM */
+.match-block { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; }
+.match-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.match-num { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+.del-btn { background: none; border: 1px solid var(--border); color: var(--text3); width: 28px; height: 28px; border-radius: 8px; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; line-height: 1; }
+
+.input-group { margin-bottom: 10px; }
+.input-label { font-size: 11px; color: var(--text3); margin-bottom: 5px; display: block; }
+.ios-input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 16px; /* prevents iOS zoom */
+  color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: inherit;
+}
+.ios-input:focus { outline: none; border-color: var(--accent); }
+.ios-input::placeholder { color: var(--text3); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.ios-select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 16px;
+  color: var(--text2);
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a876a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+.ios-select:focus { outline: none; border-color: var(--accent); }
+
+.add-btn {
+  width: 100%;
+  background: none;
+  border: 1.5px dashed var(--border);
+  color: var(--text2);
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 4px;
+  font-family: inherit;
+}
+
+/* ANALYZE BTN */
+.analyze-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--accent);
+  color: #000;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  min-height: 52px;
+}
+.analyze-btn:active { opacity: 0.85; transform: scale(0.98); }
+.analyze-btn:disabled { background: var(--bg3); color: var(--text3); }
+
+/* SPINNER */
+.spinner { width: 20px; height: 20px; border: 2.5px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* RESULTS */
+.res-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; position: relative; overflow: hidden; }
+.res-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.res-card.al::before { background: var(--green); }
+.res-card.alma::before { background: var(--red); }
+.res-card.orta::before { background: var(--amber); }
+
+.res-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px; }
+.res-title { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; line-height: 1.3; }
+.res-meta { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.oran-pill { background: var(--bg3); border: 1px solid var(--border); color: var(--accent); font-size: 14px; font-weight: 700; padding: 5px 12px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+
+.prob-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.prob-lbl { font-size: 12px; color: var(--text2); width: 76px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prob-track { flex: 1; height: 7px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+.prob-fill { height: 100%; border-radius: 4px; }
+.prob-fill.h { background: var(--accent); }
+.prob-fill.d { background: var(--text3); }
+.prob-fill.a { background: var(--red); }
+.prob-pct { font-size: 12px; font-weight: 600; width: 34px; text-align: right; flex-shrink: 0; }
+.prob-pct.h { color: var(--accent); }
+.prob-pct.d { color: var(--text3); }
+.prob-pct.a { color: var(--red); }
+
+.verdict { display: flex; gap: 10px; padding: 12px; border-radius: 10px; margin-top: 12px; align-items: flex-start; }
+.verdict.al { background: rgba(0,200,83,0.08); border: 1px solid rgba(0,200,83,0.2); }
+.verdict.alma { background: rgba(239,83,80,0.08); border: 1px solid rgba(239,83,80,0.2); }
+.verdict.orta { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); }
+.verdict-emoji { font-size: 20px; flex-shrink: 0; }
+.verdict-label { font-size: 14px; font-weight: 700; }
+.verdict-label.al { color: var(--green); }
+.verdict-label.alma { color: var(--red); }
+.verdict-label.orta { color: var(--amber); }
+.verdict-text { font-size: 13px; color: var(--text2); margin-top: 3px; line-height: 1.5; }
+
+.conf-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.conf-lbl { font-size: 11px; color: var(--text3); }
+.conf-dots { display: flex; gap: 3px; }
+.conf-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+.conf-dot.on { background: var(--accent); }
+.conf-score { font-size: 11px; color: var(--text3); margin-left: 2px; }
+
+/* SUMMARY */
+.summary { background: var(--card2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-top: 4px; margin-bottom: 20px; }
+.sum-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+.sum-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 8px; }
+.sum-row:last-child { border-bottom: none; }
+.sum-match { font-size: 13px; color: var(--text); flex: 1; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sum-oran { font-size: 14px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+.tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; flex-shrink: 0; }
+.tag.al { background: rgba(0,200,83,0.15); color: var(--green); }
+.tag.alma { background: rgba(239,83,80,0.15); color: var(--red); }
+.tag.orta { background: rgba(245,158,11,0.15); color: var(--amber); }
+
+.total-section { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.total-lbl { font-size: 13px; color: var(--text2); }
+.total-val { font-size: 26px; font-weight: 700; color: var(--accent); }
+
+.warn { background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 12px; margin-top: 12px; font-size: 12px; color: var(--amber); line-height: 1.6; }
+
+/* LOADING */
+.loading { text-align: center; padding: 60px 20px; }
+.big-spin { width: 52px; height: 52px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+.loading-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.loading-sub { font-size: 13px; color: var(--text2); }
+.loading-bar { width: 180px; height: 4px; background: var(--bg3); border-radius: 2px; margin: 20px auto 0; overflow: hidden; }
+.loading-fill { height: 100%; background: var(--accent); border-radius: 2px; animation: load 1.8s ease-in-out infinite; }
+@keyframes load { 0%{width:0;margin-left:0} 50%{width:100%;margin-left:0} 100%{width:0;margin-left:100%} }
+
+.empty { text-align: center; padding: 60px 20px; color: var(--text3); font-size: 15px; line-height: 1.6; }
+
+.err-box { background: rgba(239,83,80,0.08); border: 1px solid rgba(239,83,80,0.25); border-radius: 14px; padding: 24px; text-align: center; }
+.err-emoji { font-size: 40px; margin-bottom: 12px; }
+.err-title { font-size: 16px; font-weight: 600; color: var(--red); margin-bottom: 8px; }
+.err-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="status-bar"></div>
+
+<div class="topnav">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    KuponAI
+  </div>
+  <div class="nav-chip">Futbol · Hokey · Tüm Ligler</div>
+</div>
+
+<div class="scroll-area" id="scroll-area">
+  <!-- GÖRSEL -->
+  <div class="page active" id="page-gorsel">
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" accept="image/*" multiple capture="environment">
+      <div class="upload-emoji">📸</div>
+      <div class="upload-title">Kupon görselini yükle</div>
+      <div class="upload-sub">Galerinden seç veya kamera ile çek<br>İddaa, Nesine, Misli ve diğer siteler</div>
+    </div>
+    <div class="preview-grid" id="preview-grid"></div>
+    <div id="ocr-section" style="display:none;">
+      <button class="analyze-btn" id="ocr-btn" onclick="analyzeOCR()">
+        🤖 Görseli Analiz Et
+      </button>
+    </div>
+    <div style="text-align:center;margin-top:16px;">
+      <button onclick="switchTab('manuel')" style="background:none;border:1px solid var(--border);color:var(--text2);padding:12px 24px;border-radius:12px;font-size:14px;cursor:pointer;font-family:inherit;">
+        Manuel giriş yap →
+      </button>
+    </div>
+  </div>
+
+  <!-- MANUEL -->
+  <div class="page" id="page-manuel">
+    <div class="card">
+      <div class="card-title">Lig</div>
+      <select class="ios-select" id="league-select">
+        <option value="">— Seç (isteğe bağlı) —</option>
+        <optgroup label="⚽ Futbol">
+          <option value="Türkiye Süper Lig">Türkiye Süper Lig</option>
+          <option value="Premier League">Premier League</option>
+          <option value="La Liga">La Liga</option>
+          <option value="Serie A">Serie A</option>
+          <option value="Bundesliga">Bundesliga</option>
+          <option value="Ligue 1">Ligue 1</option>
+          <option value="Şampiyonlar Ligi">Şampiyonlar Ligi</option>
+          <option value="Avrupa Ligi">Avrupa Ligi</option>
+        </optgroup>
+        <optgroup label="🏒 Hokey">
+          <option value="AIHL">Avustralya AIHL</option>
+          <option value="NZIHL">Yeni Zelanda NZIHL</option>
+          <option value="NHL">NHL</option>
+          <option value="KHL">KHL</option>
+        </optgroup>
+        <optgroup label="🏀 Diğer">
+          <option value="NBA">NBA Basketbol</option>
+          <option value="NFL">NFL</option>
+          <option value="MLB">Beyzbol MLB</option>
+          <option value="Diğer">Diğer</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title">Maçlar</div>
+      <div id="match-list"></div>
+      <button class="add-btn" onclick="addMatch()">＋ Maç ekle</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Ek Bilgi (isteğe bağlı)</div>
+      <textarea class="ios-input" id="extra" placeholder="Sakatlıklar, cezalılar, özel durumlar..." style="min-height:80px;resize:none;line-height:1.5;"></textarea>
+    </div>
+    <button class="analyze-btn" id="manuel-btn" onclick="analyzeManuel()">
+      🤖 AI ile Analiz Et
+    </button>
+    <div style="height:8px;"></div>
+  </div>
+
+  <!-- SONUÇLAR -->
+  <div class="page" id="page-sonuc">
+    <div id="result-container">
+      <div class="empty">Henüz analiz yok.<br>Görsel yükle veya maç gir.</div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button class="bnav-btn active" id="bnav-gorsel" onclick="switchTab('gorsel')">
+    <span class="bnav-icon">📸</span>
+    <span>Görsel</span>
+  </button>
+  <button class="bnav-btn" id="bnav-manuel" onclick="switchTab('manuel')">
+    <span class="bnav-icon">✏️</span>
+    <span>Manuel</span>
+  </button>
+  <button class="bnav-btn" id="bnav-sonuc" onclick="switchTab('sonuc')">
+    <span class="bnav-icon">📊</span>
+    <span>Sonuçlar</span>
+  </button>
+</div>
+
+<script>
+const API = 'https://api.anthropic.com/v1/messages';
+let imgs = [];
+let mc = 0;
+
+function switchTab(t) {
+  ['gorsel','manuel','sonuc'].forEach(n => {
+    document.getElementById('page-'+n).classList.toggle('active', n===t);
+    document.getElementById('bnav-'+n).classList.toggle('active', n===t);
+  });
+  document.getElementById('scroll-area').scrollTop = 0;
+}
+
+// FILE UPLOAD
+const zone = document.getElementById('upload-zone');
+const fi = document.getElementById('file-input');
+fi.addEventListener('change', e => handleFiles(e.target.files));
+
+function handleFiles(files) {
+  imgs = [];
+  const grid = document.getElementById('preview-grid');
+  grid.innerHTML = '';
+  let loaded = 0;
+  Array.from(files).forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => {
+      imgs.push(ev.target.result);
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      img.className = 'preview-img';
+      grid.appendChild(img);
+      loaded++;
+      if(loaded === files.length) document.getElementById('ocr-section').style.display = 'block';
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+async function analyzeOCR() {
+  if(!imgs.length) return;
+  const btn = document.getElementById('ocr-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Okunuyor...';
+  switchTab('sonuc');
+  showLoading('Görsel okunuyor...');
+
+  try {
+    const imgBlocks = imgs.map(i => ({
+      type: 'image',
+      source: { type: 'base64', media_type: i.split(';')[0].split(':')[1], data: i.split(',')[1] }
+    }));
+    const prompt = `Bu bir bahis kuponu ekran görüntüsü. Tüm maçları çıkar ve analiz et.
+
+Her maç için JSON al:
+- home: ev sahibi takım adı
+- away: deplasman takımı
+- league: lig/turnuva adı
+- oran: sayısal oran değeri (yoksa 0)
+- secim: seçilen bahis türü (örn: Maç Sonucu 1, KG Var)
+- homeProb: ev sahibi kazanma % tahmini (0-100)
+- drawProb: beraberlik % tahmini (0-100)
+- awayProb: deplasman kazanma % tahmini (0-100)
+- karar: "AL" veya "ALMA" veya "ORTA RİSK"
+- gerekcr: 2 cümle Türkçe gerekçe
+- guven: güven skoru 1-10
+
+SADECE JSON, başka hiçbir şey yazma:
+{"matches":[...]}`;
+
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 2000,
+        messages: [{role:'user', content:[...imgBlocks,{type:'text',text:prompt}]}]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+    showResults(JSON.parse(raw).matches);
+  } catch(e) { showError(e.message); }
+
+  btn.disabled = false;
+  btn.innerHTML = '🤖 Görseli Analiz Et';
+}
+
+// MANUEL
+function addMatch(h='',a='',o='') {
+  mc++;
+  const id = mc;
+  const el = document.createElement('div');
+  el.className = 'match-block';
+  el.id = 'mb'+id;
+  el.innerHTML = `
+    <div class="match-block-header">
+      <span class="match-num">Maç ${id}</span>
+      <button class="del-btn" onclick="document.getElementById('mb${id}').remove()">×</button>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Ev Sahibi</label>
+      <input class="ios-input" type="text" id="h${id}" placeholder="Takım adı" value="${h}" autocomplete="off" autocorrect="off">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Deplasman</label>
+      <input class="ios-input" type="text" id="a${id}" placeholder="Takım adı" value="${a}" autocomplete="off" autocorrect="off">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Oran</label>
+      <input class="ios-input" type="number" id="o${id}" placeholder="örn: 2.10" value="${o}" step="0.01" min="1" inputmode="decimal">
+    </div>`;
+  document.getElementById('match-list').appendChild(el);
+}
+
+async function analyzeManuel() {
+  const btn = document.getElementById('manuel-btn');
+  const league = document.getElementById('league-select').value;
+  const extra = document.getElementById('extra').value;
+  const blocks = document.querySelectorAll('.match-block');
+  const data = [];
+  blocks.forEach(b => {
+    const id = b.id.replace('mb','');
+    const h = document.getElementById('h'+id)?.value?.trim();
+    const a = document.getElementById('a'+id)?.value?.trim();
+    const o = document.getElementById('o'+id)?.value;
+    if(h && a) data.push({home:h, away:a, oran:parseFloat(o)||0});
+  });
+  if(!data.length) { alert('En az 1 maç gir.'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Analiz ediliyor...';
+  switchTab('sonuc');
+  showLoading('Maçlar analiz ediliyor...');
+
+  const prompt = `Profesyonel spor analisti olarak aşağıdaki maçları analiz et.
+
+LİG: ${league||'Belirtilmedi'}
+${data.map((m,i)=>`${i+1}. ${m.home} vs ${m.away} | Oran: ${m.oran||'?'}`).join('\n')}
+${extra?'EK BİLGİ: '+extra:''}
+
+Her maç için ev/beraberlik/deplasman olasılığı hesapla, oranın değerini değerlendir, net karar ver.
+
+SADECE JSON:
+{"matches":[{"home":"...","away":"...","league":"...","oran":0,"homeProb":0,"drawProb":0,"awayProb":0,"karar":"AL","gerekcr":"...","guven":0}]}`;
+
+  try {
+    const res = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:2000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const d = await res.json();
+    const raw = d.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+    showResults(JSON.parse(raw).matches);
+  } catch(e) { showError(e.message); }
+
+  btn.disabled = false;
+  btn.innerHTML = '🤖 AI ile Analiz Et';
+}
+
+function showLoading(msg) {
+  document.getElementById('result-container').innerHTML = `
+    <div class="loading">
+      <div class="big-spin"></div>
+      <div class="loading-title">${msg}</div>
+      <div class="loading-sub">İstatistikler değerlendiriliyor...</div>
+      <div class="loading-bar"><div class="loading-fill"></div></div>
+    </div>`;
+}
+
+function showError(msg) {
+  document.getElementById('result-container').innerHTML = `
+    <div class="err-box">
+      <div class="err-emoji">⚠️</div>
+      <div class="err-title">Analiz başarısız</div>
+      <div class="err-text">${msg}<br><br>İnternet bağlantınızı kontrol edin.</div>
+    </div>`;
+}
+
+function showResults(ms) {
+  const allar = ms.filter(m=>m.karar==='AL');
+  const totalOran = allar.reduce((p,m)=>p*(m.oran||1),1);
+  let html = '';
+
+  ms.forEach(m => {
+    const k = m.karar==='AL'?'al':m.karar==='ALMA'?'alma':'orta';
+    const ic = k==='al'?'✅':k==='alma'?'❌':'⚠️';
+    const dots = Array.from({length:10},(_,i)=>`<div class="conf-dot${i<(m.guven||0)?' on':''}"></div>`).join('');
+    const shortHome = m.home?.length>10 ? m.home.substring(0,10)+'…' : m.home;
+    const shortAway = m.away?.length>10 ? m.away.substring(0,10)+'…' : m.away;
+
+    html += `<div class="res-card ${k}">
+      <div class="res-header">
+        <div style="flex:1;">
+          <div class="res-title">${m.home} - ${m.away}</div>
+          <div class="res-meta">${m.league||''} ${m.secim?'· '+m.secim:''}</div>
+        </div>
+        ${m.oran?`<div class="oran-pill">${m.oran}</div>`:''}
+      </div>
+      <div>
+        <div class="prob-row">
+          <span class="prob-lbl">${shortHome}</span>
+          <div class="prob-track"><div class="prob-fill h" style="width:${m.homeProb||0}%"></div></div>
+          <span class="prob-pct h">%${m.homeProb||0}</span>
+        </div>
+        <div class="prob-row">
+          <span class="prob-lbl">Beraberlik</span>
+          <div class="prob-track"><div class="prob-fill d" style="width:${m.drawProb||0}%"></div></div>
+          <span class="prob-pct d">%${m.drawProb||0}</span>
+        </div>
+        <div class="prob-row">
+          <span class="prob-lbl">${shortAway}</span>
+          <div class="prob-track"><div class="prob-fill a" style="width:${m.awayProb||0}%"></div></div>
+          <span class="prob-pct a">%${m.awayProb||0}</span>
+        </div>
+      </div>
+      <div class="verdict ${k}">
+        <span class="verdict-emoji">${ic}</span>
+        <div>
+          <div class="verdict-label ${k}">${m.karar}</div>
+          <div class="verdict-text">${m.gerekcr||''}</div>
+        </div>
+      </div>
+      <div class="conf-row">
+        <span class="conf-lbl">Güven</span>
+        <div class="conf-dots">${dots}</div>
+        <span class="conf-score">${m.guven||0}/10</span>
+      </div>
+    </div>`;
+  });
+
+  if(allar.length > 0) {
+    html += `<div class="summary">
+      <div class="sum-title">🎯 Önerilen Kupon</div>
+      ${allar.map(m=>`
+        <div class="sum-row">
+          <span class="sum-match"><span class="tag al">AL</span>${m.home} - ${m.away}</span>
+          <span class="sum-oran">${m.oran||'?'}</span>
+        </div>`).join('')}
+      <div class="total-section">
+        <span class="total-lbl">Toplam oran</span>
+        <span class="total-val">${totalOran.toFixed(2)}</span>
+      </div>
+      <div class="warn">⚠️ Analiz istatistiksel tahmine dayanır. Sonuçlar garanti değildir. Sorumlu oynayın.</div>
+    </div>`;
+  }
+
+  document.getElementById('result-container').innerHTML = html;
+}
+
+// init
+addMatch('Galatasaray','Fenerbahçe','2.10');
+addMatch('','','');
+</script>
+</body>
+</html>
