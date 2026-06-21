@@ -37,10 +37,8 @@ body {
   flex-direction: column;
 }
 
-/* STATUS BAR SPACER */
 .status-bar { height: var(--safe-top); background: var(--bg2); flex-shrink: 0; }
 
-/* TOP NAV */
 .topnav {
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
@@ -56,7 +54,6 @@ body {
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 .nav-chip { font-size: 11px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
 
-/* SCROLL AREA */
 .scroll-area {
   flex: 1;
   overflow-y: auto;
@@ -66,7 +63,6 @@ body {
 .page { display: none; padding: 16px 16px 24px; }
 .page.active { display: block; }
 
-/* BOTTOM NAV */
 .bottom-nav {
   background: var(--bg2);
   border-top: 1px solid var(--border);
@@ -95,24 +91,42 @@ body {
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
 .card-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
 
-/* UPLOAD */
+/* UPLOAD SOURCE BUTTONS */
+.upload-source-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.upload-source-btn {
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 12px;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+}
+.upload-source-btn.gallery { border-color: rgba(0,230,118,0.3); background: rgba(0,230,118,0.05); }
+.upload-source-btn.camera { border-color: rgba(105,240,174,0.3); background: rgba(105,240,174,0.05); }
+.upload-source-btn input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.usb-emoji { font-size: 36px; margin-bottom: 8px; }
+.usb-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.usb-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
 .upload-zone {
   border: 2px dashed var(--border);
   border-radius: 16px;
-  padding: 40px 20px;
+  padding: 28px 20px;
   text-align: center;
   position: relative;
   margin-bottom: 12px;
   background: var(--bg3);
 }
 .upload-zone.active { border-color: var(--accent); background: rgba(0,230,118,0.05); }
-#file-input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-.upload-emoji { font-size: 52px; margin-bottom: 12px; }
-.upload-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-.upload-sub { font-size: 13px; color: var(--text2); line-height: 1.5; }
+.upload-emoji { font-size: 40px; margin-bottom: 10px; }
+.upload-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.upload-sub { font-size: 12px; color: var(--text2); line-height: 1.5; }
 
 .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.preview-wrap { position: relative; }
 .preview-img { width: 100%; border-radius: 10px; border: 1px solid var(--border); display: block; }
+.preview-del { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; background: rgba(10,15,10,0.85); border: 1px solid var(--border); border-radius: 50%; color: var(--text); font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
 /* FORM */
 .match-block { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; }
@@ -128,7 +142,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px 14px;
-  font-size: 16px; /* prevents iOS zoom */
+  font-size: 16px;
   color: var(--text);
   -webkit-appearance: none;
   appearance: none;
@@ -136,8 +150,6 @@ body {
 }
 .ios-input:focus { outline: none; border-color: var(--accent); }
 .ios-input::placeholder { color: var(--text3); }
-
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .ios-select {
   width: 100%;
@@ -192,21 +204,42 @@ body {
 .analyze-btn:active { opacity: 0.85; transform: scale(0.98); }
 .analyze-btn:disabled { background: var(--bg3); color: var(--text3); }
 
-/* SPINNER */
 .spinner { width: 20px; height: 20px; border: 2.5px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* RESULTS */
+/* RESULTS — NEW LAYOUT WITH SIDE PERCENTAGE RING */
 .res-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; position: relative; overflow: hidden; }
 .res-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
 .res-card.al::before { background: var(--green); }
 .res-card.alma::before { background: var(--red); }
 .res-card.orta::before { background: var(--amber); }
 
-.res-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px; }
-.res-title { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; line-height: 1.3; }
+.res-top { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+
+/* DAIRESEL YÜZDE GÖSTERGESİ */
+.ring-wrap { position: relative; width: 72px; height: 72px; flex-shrink: 0; }
+.ring-svg { transform: rotate(-90deg); width: 72px; height: 72px; }
+.ring-bg { fill: none; stroke: var(--bg3); stroke-width: 7; }
+.ring-fill { fill: none; stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset 1.2s ease; }
+.ring-fill.al { stroke: var(--green); }
+.ring-fill.alma { stroke: var(--red); }
+.ring-fill.orta { stroke: var(--amber); }
+.ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ring-pct { font-size: 18px; font-weight: 800; line-height: 1; }
+.ring-pct.al { color: var(--accent2); }
+.ring-pct.alma { color: var(--red); }
+.ring-pct.orta { color: var(--amber); }
+.ring-sub { font-size: 8px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px; }
+
+.res-info { flex: 1; min-width: 0; }
+.res-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
 .res-meta { font-size: 11px; color: var(--text3); margin-top: 3px; }
-.oran-pill { background: var(--bg3); border: 1px solid var(--border); color: var(--accent); font-size: 14px; font-weight: 700; padding: 5px 12px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.res-bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; gap: 8px; }
+.oran-pill { background: var(--bg3); border: 1px solid var(--border); color: var(--accent); font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+.karar-chip { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.karar-chip.al { background: rgba(0,200,83,0.15); color: var(--green); }
+.karar-chip.alma { background: rgba(239,83,80,0.15); color: var(--red); }
+.karar-chip.orta { background: rgba(245,158,11,0.15); color: var(--amber); }
 
 .prob-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .prob-lbl { font-size: 12px; color: var(--text2); width: 76px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -225,18 +258,7 @@ body {
 .verdict.alma { background: rgba(239,83,80,0.08); border: 1px solid rgba(239,83,80,0.2); }
 .verdict.orta { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); }
 .verdict-emoji { font-size: 20px; flex-shrink: 0; }
-.verdict-label { font-size: 14px; font-weight: 700; }
-.verdict-label.al { color: var(--green); }
-.verdict-label.alma { color: var(--red); }
-.verdict-label.orta { color: var(--amber); }
-.verdict-text { font-size: 13px; color: var(--text2); margin-top: 3px; line-height: 1.5; }
-
-.conf-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
-.conf-lbl { font-size: 11px; color: var(--text3); }
-.conf-dots { display: flex; gap: 3px; }
-.conf-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
-.conf-dot.on { background: var(--accent); }
-.conf-score { font-size: 11px; color: var(--text3); margin-left: 2px; }
+.verdict-text { font-size: 13px; color: var(--text2); line-height: 1.5; }
 
 /* SUMMARY */
 .summary { background: var(--card2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-top: 4px; margin-bottom: 20px; }
@@ -271,6 +293,11 @@ body {
 .err-emoji { font-size: 40px; margin-bottom: 12px; }
 .err-title { font-size: 16px; font-weight: 600; color: var(--red); margin-bottom: 8px; }
 .err-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* SORT BAR */
+.sort-bar { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
+.sort-chip { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); padding: 6px 14px; border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+.sort-chip.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -288,12 +315,29 @@ body {
 <div class="scroll-area" id="scroll-area">
   <!-- GÖRSEL -->
   <div class="page active" id="page-gorsel">
-    <div class="upload-zone" id="upload-zone">
-      <input type="file" id="file-input" accept="image/*" multiple capture="environment">
-      <div class="upload-emoji">📸</div>
-      <div class="upload-title">Kupon görselini yükle</div>
-      <div class="upload-sub">Galerinden seç veya kamera ile çek<br>İddaa, Nesine, Misli ve diğer siteler</div>
+    <div class="card-title" style="margin-bottom:10px;">Kupon görselini yükle</div>
+    <div class="upload-source-grid">
+      <div class="upload-source-btn gallery">
+        <input type="file" id="gallery-input" accept="image/*" multiple>
+        <div class="usb-emoji">🖼️</div>
+        <div class="usb-title">Galeriden Seç</div>
+        <div class="usb-sub">Birden fazla seçebilirsin</div>
+      </div>
+      <div class="upload-source-btn camera">
+        <input type="file" id="camera-input" accept="image/*" capture="environment">
+        <div class="usb-emoji">📷</div>
+        <div class="usb-title">Fotoğraf Çek</div>
+        <div class="usb-sub">Kamerayı aç</div>
+      </div>
     </div>
+
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" accept="image/*" multiple>
+      <div class="upload-emoji">📸</div>
+      <div class="upload-title">veya buraya sürükle / dokun</div>
+      <div class="upload-sub">İddaa, Nesine, Misli, Bwin ve diğer siteler</div>
+    </div>
+
     <div class="preview-grid" id="preview-grid"></div>
     <div id="ocr-section" style="display:none;">
       <button class="analyze-btn" id="ocr-btn" onclick="analyzeOCR()">
@@ -379,6 +423,8 @@ body {
 const API = 'https://api.anthropic.com/v1/messages';
 let imgs = [];
 let mc = 0;
+let lastResults = [];
+let currentSort = 'default';
 
 function switchTab(t) {
   ['gorsel','manuel','sonuc'].forEach(n => {
@@ -388,33 +434,39 @@ function switchTab(t) {
   document.getElementById('scroll-area').scrollTop = 0;
 }
 
-// FILE UPLOAD
-const zone = document.getElementById('upload-zone');
-const fi = document.getElementById('file-input');
-fi.addEventListener('change', e => handleFiles(e.target.files));
+// FILE UPLOAD — multiple entry points
+document.getElementById('gallery-input').addEventListener('change', e => handleFiles(e.target.files));
+document.getElementById('camera-input').addEventListener('change', e => handleFiles(e.target.files));
+document.getElementById('file-input').addEventListener('change', e => handleFiles(e.target.files));
 
 function handleFiles(files) {
-  imgs = [];
   const grid = document.getElementById('preview-grid');
-  grid.innerHTML = '';
-  let loaded = 0;
-  Array.from(files).forEach(f => {
+  let startIdx = imgs.length;
+  Array.from(files).forEach((f, idx) => {
     const r = new FileReader();
     r.onload = ev => {
-      imgs.push(ev.target.result);
-      const img = document.createElement('img');
-      img.src = ev.target.result;
-      img.className = 'preview-img';
-      grid.appendChild(img);
-      loaded++;
-      if(loaded === files.length) document.getElementById('ocr-section').style.display = 'block';
+      const myIdx = startIdx + idx;
+      imgs[myIdx] = ev.target.result;
+      const wrap = document.createElement('div');
+      wrap.className = 'preview-wrap';
+      wrap.id = 'pw'+myIdx;
+      wrap.innerHTML = `<img src="${ev.target.result}" class="preview-img"><div class="preview-del" onclick="removeImg(${myIdx})">×</div>`;
+      grid.appendChild(wrap);
+      document.getElementById('ocr-section').style.display = 'block';
     };
     r.readAsDataURL(f);
   });
 }
 
+function removeImg(idx) {
+  imgs[idx] = null;
+  document.getElementById('pw'+idx)?.remove();
+  if(imgs.filter(Boolean).length === 0) document.getElementById('ocr-section').style.display = 'none';
+}
+
 async function analyzeOCR() {
-  if(!imgs.length) return;
+  const validImgs = imgs.filter(Boolean);
+  if(!validImgs.length) return;
   const btn = document.getElementById('ocr-btn');
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Okunuyor...';
@@ -422,13 +474,13 @@ async function analyzeOCR() {
   showLoading('Görsel okunuyor...');
 
   try {
-    const imgBlocks = imgs.map(i => ({
+    const imgBlocks = validImgs.map(i => ({
       type: 'image',
       source: { type: 'base64', media_type: i.split(';')[0].split(':')[1], data: i.split(',')[1] }
     }));
-    const prompt = `Bu bir bahis kuponu ekran görüntüsü. Tüm maçları çıkar ve analiz et.
+    const prompt = `Bu bir bahis kuponu ekran görüntüsü. Tüm maçları çıkar ve detaylı analiz et.
 
-Her maç için JSON al:
+Her maç için JSON alanları:
 - home: ev sahibi takım adı
 - away: deplasman takımı
 - league: lig/turnuva adı
@@ -437,7 +489,8 @@ Her maç için JSON al:
 - homeProb: ev sahibi kazanma % tahmini (0-100)
 - drawProb: beraberlik % tahmini (0-100)
 - awayProb: deplasman kazanma % tahmini (0-100)
-- karar: "AL" veya "ALMA" veya "ORTA RİSK"
+- alinabilirlik: bu seçimin TUTMA İHTİMALİ yüzdesi (0-100). Bu, oranın doğru tahmin edilen sonuca göre gerçekleşme olasılığıdır. Form, sıralama, H2H, oran değeri hepsini hesaba kat.
+- karar: "AL" (alinabilirlik>=60) veya "ALMA" (alinabilirlik<40) veya "ORTA RİSK" (40-60 arası)
 - gerekcr: 2 cümle Türkçe gerekçe
 - guven: güven skoru 1-10
 
@@ -449,13 +502,15 @@ SADECE JSON, başka hiçbir şey yazma:
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 2000,
+        max_tokens: 2500,
         messages: [{role:'user', content:[...imgBlocks,{type:'text',text:prompt}]}]
       })
     });
     const data = await res.json();
     const raw = data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
-    showResults(JSON.parse(raw).matches);
+    const parsed = JSON.parse(raw);
+    lastResults = parsed.matches;
+    showResults(lastResults);
   } catch(e) { showError(e.message); }
 
   btn.disabled = false;
@@ -515,10 +570,10 @@ LİG: ${league||'Belirtilmedi'}
 ${data.map((m,i)=>`${i+1}. ${m.home} vs ${m.away} | Oran: ${m.oran||'?'}`).join('\n')}
 ${extra?'EK BİLGİ: '+extra:''}
 
-Her maç için ev/beraberlik/deplasman olasılığı hesapla, oranın değerini değerlendir, net karar ver.
+Her maç için ev/beraberlik/deplasman olasılığı hesapla, "alinabilirlik" (0-100 tutma ihtimali yüzdesi) hesapla, oranın değerini değerlendir, net karar ver.
 
 SADECE JSON:
-{"matches":[{"home":"...","away":"...","league":"...","oran":0,"homeProb":0,"drawProb":0,"awayProb":0,"karar":"AL","gerekcr":"...","guven":0}]}`;
+{"matches":[{"home":"...","away":"...","league":"...","oran":0,"homeProb":0,"drawProb":0,"awayProb":0,"alinabilirlik":0,"karar":"AL","gerekcr":"...","guven":0}]}`;
 
   try {
     const res = await fetch(API, {
@@ -526,13 +581,15 @@ SADECE JSON:
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         model:'claude-sonnet-4-6',
-        max_tokens:2000,
+        max_tokens:2500,
         messages:[{role:'user',content:prompt}]
       })
     });
     const d = await res.json();
     const raw = d.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
-    showResults(JSON.parse(raw).matches);
+    const parsed = JSON.parse(raw);
+    lastResults = parsed.matches;
+    showResults(lastResults);
   } catch(e) { showError(e.message); }
 
   btn.disabled = false;
@@ -558,29 +615,72 @@ function showError(msg) {
     </div>`;
 }
 
+function sortResults(type) {
+  currentSort = type;
+  document.querySelectorAll('.sort-chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('sort-'+type)?.classList.add('active');
+  let sorted = [...lastResults];
+  if(type === 'yuksek') sorted.sort((a,b) => (b.alinabilirlik||0)-(a.alinabilirlik||0));
+  else if(type === 'dusuk') sorted.sort((a,b) => (a.alinabilirlik||0)-(b.alinabilirlik||0));
+  renderResultCards(sorted);
+}
+
+function ringCircumference(pct) {
+  const r = 32.5;
+  const c = 2 * Math.PI * r;
+  const offset = c - (pct/100)*c;
+  return { c, offset };
+}
+
 function showResults(ms) {
-  const allar = ms.filter(m=>m.karar==='AL');
+  let html = '';
+  if(ms.length > 1) {
+    html += `<div class="sort-bar">
+      <span class="sort-chip active" id="sort-default" onclick="sortResults('default')">Sırala: Varsayılan</span>
+      <span class="sort-chip" id="sort-yuksek" onclick="sortResults('yuksek')">En Yüksek %</span>
+      <span class="sort-chip" id="sort-dusuk" onclick="sortResults('dusuk')">En Düşük %</span>
+    </div>`;
+  }
+  html += `<div id="cards-area"></div>`;
+  document.getElementById('result-container').innerHTML = html;
+  renderResultCards(ms);
+}
+
+function renderResultCards(ms) {
+  const allar = lastResults.filter(m=>m.karar==='AL');
   const totalOran = allar.reduce((p,m)=>p*(m.oran||1),1);
   let html = '';
 
   ms.forEach(m => {
     const k = m.karar==='AL'?'al':m.karar==='ALMA'?'alma':'orta';
     const ic = k==='al'?'✅':k==='alma'?'❌':'⚠️';
-    const dots = Array.from({length:10},(_,i)=>`<div class="conf-dot${i<(m.guven||0)?' on':''}"></div>`).join('');
-    const shortHome = m.home?.length>10 ? m.home.substring(0,10)+'…' : m.home;
-    const shortAway = m.away?.length>10 ? m.away.substring(0,10)+'…' : m.away;
+    const pct = m.alinabilirlik !== undefined ? m.alinabilirlik : (k==='al'?70:k==='alma'?25:50);
+    const {c, offset} = ringCircumference(pct);
 
     html += `<div class="res-card ${k}">
-      <div class="res-header">
-        <div style="flex:1;">
+      <div class="res-top">
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 72 72">
+            <circle class="ring-bg" cx="36" cy="36" r="32.5"></circle>
+            <circle class="ring-fill ${k}" cx="36" cy="36" r="32.5" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-target-offset="${offset}"></circle>
+          </svg>
+          <div class="ring-label">
+            <div class="ring-pct ${k}">%${pct}</div>
+            <div class="ring-sub">tutma</div>
+          </div>
+        </div>
+        <div class="res-info">
           <div class="res-title">${m.home} - ${m.away}</div>
           <div class="res-meta">${m.league||''} ${m.secim?'· '+m.secim:''}</div>
+          <div class="res-bottom-row">
+            ${m.oran?`<span class="oran-pill">${m.oran}</span>`:'<span></span>'}
+            <span class="karar-chip ${k}">${ic} ${m.karar}</span>
+          </div>
         </div>
-        ${m.oran?`<div class="oran-pill">${m.oran}</div>`:''}
       </div>
       <div>
         <div class="prob-row">
-          <span class="prob-lbl">${shortHome}</span>
+          <span class="prob-lbl">${m.home?.length>10?m.home.substring(0,10)+'…':m.home}</span>
           <div class="prob-track"><div class="prob-fill h" style="width:${m.homeProb||0}%"></div></div>
           <span class="prob-pct h">%${m.homeProb||0}</span>
         </div>
@@ -590,22 +690,14 @@ function showResults(ms) {
           <span class="prob-pct d">%${m.drawProb||0}</span>
         </div>
         <div class="prob-row">
-          <span class="prob-lbl">${shortAway}</span>
+          <span class="prob-lbl">${m.away?.length>10?m.away.substring(0,10)+'…':m.away}</span>
           <div class="prob-track"><div class="prob-fill a" style="width:${m.awayProb||0}%"></div></div>
           <span class="prob-pct a">%${m.awayProb||0}</span>
         </div>
       </div>
       <div class="verdict ${k}">
         <span class="verdict-emoji">${ic}</span>
-        <div>
-          <div class="verdict-label ${k}">${m.karar}</div>
-          <div class="verdict-text">${m.gerekcr||''}</div>
-        </div>
-      </div>
-      <div class="conf-row">
-        <span class="conf-lbl">Güven</span>
-        <div class="conf-dots">${dots}</div>
-        <span class="conf-score">${m.guven||0}/10</span>
+        <div class="verdict-text">${m.gerekcr||''}</div>
       </div>
     </div>`;
   });
@@ -615,7 +707,7 @@ function showResults(ms) {
       <div class="sum-title">🎯 Önerilen Kupon</div>
       ${allar.map(m=>`
         <div class="sum-row">
-          <span class="sum-match"><span class="tag al">AL</span>${m.home} - ${m.away}</span>
+          <span class="sum-match"><span class="tag al">AL</span>${m.home} - ${m.away} <strong style="color:var(--accent2)">%${m.alinabilirlik||0}</strong></span>
           <span class="sum-oran">${m.oran||'?'}</span>
         </div>`).join('')}
       <div class="total-section">
@@ -626,7 +718,15 @@ function showResults(ms) {
     </div>`;
   }
 
-  document.getElementById('result-container').innerHTML = html;
+  document.getElementById('cards-area').innerHTML = html;
+
+  // animate rings
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.ring-fill').forEach(el => {
+      const target = el.getAttribute('data-target-offset');
+      setTimeout(() => { el.style.strokeDashoffset = target; }, 50);
+    });
+  });
 }
 
 // init
